@@ -1,0 +1,76 @@
+{
+  "name": "toto-drive-admin-electron",
+  "productName": "Toto Drive Admin Console",
+  "version": "1.0.0",
+  "description": "Desktop Fleet Operations & Financial Settlement Console for Toto Drive (macOS Big Sur 11.7.11 x86_64)",
+  "main": "dist/main.cjs",
+  "type": "module",
+  "author": "Toto Drive Fleet Operations <admin@totodrive.in>",
+  "scripts": {
+    "build:main": "esbuild src/main/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs --external:electron",
+    "build:preload": "esbuild src/preload/preload.ts --bundle --platform=node --format=cjs --outfile=dist/preload.cjs --external:electron",
+    "build": "npm run build:main && npm run build:preload",
+    "start": "electron dist/main.cjs",
+    "package:mac": "npm run build && electron-builder --mac --x64",
+    "test:security": "tsx tests/electron_security.test.ts"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0"
+  },
+  "devDependencies": {
+    "electron": "^25.9.8",
+    "electron-builder": "^24.13.3",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.8.2"
+  },
+  "build": {
+    "appId": "in.totodrive.admin",
+    "productName": "Toto Drive Admin Console",
+    "copyright": "Copyright © 2026 Toto Drive Fleet Operations",
+    "directories": {
+      "output": "dist-package"
+    },
+    "files": [
+      "dist/**/*",
+      "src/renderer/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.business",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "minimumSystemVersion": "11.0.0",
+      "icon": "build/icon.png",
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "dmg": {
+      "title": "Toto Drive Fleet Operations ${version}",
+      "icon": "build/icon.png",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "window": {
+        "width": 540,
+        "height": 380
+      }
+    }
+  }
+}

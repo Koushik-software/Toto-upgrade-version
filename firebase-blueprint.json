@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "UserProfile": {
+      "collection": "users",
+      "fields": {
+        "id": { "type": "string", "description": "User unique identifier" },
+        "name": { "type": "string", "description": "User display name" },
+        "phone": { "type": "string", "description": "User phone number" },
+        "email": { "type": "string", "description": "User email address" },
+        "rating": { "type": "number", "description": "User rating" },
+        "totalRides": { "type": "number", "description": "Total completed rides" },
+        "walletBalance": { "type": "number", "description": "Current wallet balance" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      },
+      "rules": {
+        "read": "request.auth != null",
+        "write": "request.auth != null && request.auth.uid == resource.data.id"
+      }
+    },
+    "DriverProfile": {
+      "collection": "drivers",
+      "fields": {
+        "id": { "type": "string", "description": "Driver ID" },
+        "name": { "type": "string", "description": "Driver name" },
+        "phone": { "type": "string", "description": "Driver phone" },
+        "pin": { "type": "string", "description": "Driver login PIN" },
+        "status": { "type": "string", "description": "Driver online/offline status" },
+        "vehicleNumber": { "type": "string", "description": "Vehicle registration number" },
+        "vehicleType": { "type": "string", "description": "Vehicle type" },
+        "rating": { "type": "number", "description": "Driver average rating" },
+        "totalRides": { "type": "number", "description": "Completed rides count" },
+        "earnings": { "type": "number", "description": "Driver total earnings" },
+        "isOnline": { "type": "boolean", "description": "Online availability flag" },
+        "createdAt": { "type": "string", "description": "Registration date" }
+      },
+      "rules": {
+        "read": "request.auth != null",
+        "write": "request.auth != null"
+      }
+    },
+    "Ride": {
+      "collection": "rides",
+      "fields": {
+        "id": { "type": "string", "description": "Ride unique identifier" },
+        "userId": { "type": "string", "description": "Customer ID" },
+        "userName": { "type": "string", "description": "Customer name" },
+        "driverId": { "type": "string", "description": "Assigned driver ID" },
+        "driverName": { "type": "string", "description": "Driver name" },
+        "status": { "type": "string", "description": "Strict ride status" },
+        "pickup": { "type": "map", "description": "Pickup coordinates and address" },
+        "dropoff": { "type": "map", "description": "Dropoff coordinates and address" },
+        "fare": { "type": "number", "description": "Authoritative fare amount" },
+        "otp": { "type": "string", "description": "4-digit ride start OTP" },
+        "createdAt": { "type": "string", "description": "Booking timestamp" }
+      },
+      "rules": {
+        "read": "request.auth != null",
+        "write": "request.auth != null"
+      }
+    },
+    "VehicleRecord": {
+      "collection": "vehicles",
+      "fields": {
+        "vehicle_id": { "type": "string", "description": "Vehicle identifier" },
+        "driver_id": { "type": "string", "description": "Driver identifier" },
+        "vehicle_type": { "type": "string", "description": "Type of toto vehicle" },
+        "registration_number": { "type": "string", "description": "Plate number" },
+        "verification_status": { "type": "string", "description": "VERIFIED, PENDING, REJECTED, SUSPENDED" }
+      },
+      "rules": {
+        "read": "true",
+        "write": "true"
+      }
+    },
+    "DriverApproval": {
+      "collection": "driver_approvals",
+      "fields": {
+        "id": { "type": "string", "description": "Approval request unique identifier" },
+        "driverName": { "type": "string", "description": "Applicant full name" },
+        "phone": { "type": "string", "description": "Applicant phone number" },
+        "vehicleType": { "type": "string", "description": "Vehicle type" },
+        "vehicleNumber": { "type": "string", "description": "Vehicle registration plate" },
+        "vehicleModel": { "type": "string", "description": "Vehicle model name" },
+        "vehicleColor": { "type": "string", "description": "Vehicle color" },
+        "driverPhoto": { "type": "string", "description": "Driver KYC avatar photo" },
+        "totoPhotos": { "type": "list", "description": "Toto vehicle inspection photos" },
+        "status": { "type": "string", "description": "Status: pending, approved, rejected" },
+        "assignedPin": { "type": "string", "description": "Assigned 4-digit PIN" },
+        "createdAt": { "type": "string", "description": "Submission ISO date" },
+        "approvedAt": { "type": "string", "description": "Approval ISO date" },
+        "rejectedReason": { "type": "string", "description": "Rejection notes" }
+      },
+      "rules": {
+        "read": "true",
+        "write": "true"
+      }
+    }
+  }
+}

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' http://localhost:3000 https://ais-dev-tqhf7unnw3p6opcpsdnmrh-89441897052.asia-southeast1.run.app ws://localhost:3000; frame-src 'none'; object-src 'none';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toto Drive — Fleet Operations & Financial Settlement Console</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-dark">
+  <!-- MAC OS TITLEBAR DRAG REGION -->
+  <div class="window-titlebar">
+    <div class="window-traffic-spacer"></div>
+    <div class="window-title">
+      <span class="app-icon">🛺</span>
+      <span class="app-name">Toto Drive Operations Console</span>
+      <span class="badge-os">macOS Big Sur 11.7.11 (x86_64)</span>
+    </div>
+    <div class="window-actions">
+      <div id="backend-status-pill" class="status-pill online">
+        <span class="dot"></span>
+        <span id="backend-status-text">Backend Online</span>
+      </div>
+      <div class="session-timer">
+        <span>Session:</span>
+        <strong id="session-countdown">14:59</strong>
+      </div>
+      <button id="btn-logout" class="btn-sm btn-outline-danger" title="Secure Logout">Logout</button>
+    </div>
+  </div>
+
+  <!-- AUTHENTICATION OVERLAY -->
+  <div id="auth-modal" class="modal-backdrop">
+    <div class="modal-card auth-card">
+      <div class="auth-header">
+        <div class="logo-box">🛺</div>
+        <h2>Toto Drive Fleet Admin</h2>
+        <p>Authoritative Desktop Management & Settlement Console</p>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label>Administrator Username</label>
+          <input type="text" id="login-username" required placeholder="admin" value="admin" autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label>Secure Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••••••" value="admin12345" autocomplete="current-password">
+        </div>
+
+        <div class="form-group">
+          <label>Backend Endpoint</label>
+          <input type="text" id="login-backend-url" required value="http://localhost:3000">
+        </div>
+
+        <div id="login-error" class="alert-error" style="display: none;"></div>
+
+        <button type="submit" id="btn-submit-login" class="btn-primary btn-block">
+          Authenticate & Decrypt Session
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span>🔒 Zero Credential Bundling • Pure IPC Isolation • RBAC Enforced</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div class="app-container" id="app-main" style="display: none;">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar">
+      <div class="admin-profile-badge">
+        <div class="avatar" id="admin-avatar">AD</div>
+        <div class="info">
+          <div class="name" id="admin-name">Administrator</div>
+          <div class="role-badge" id="admin-role">SUPER_ADMIN</div>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <div class="nav-section-title">COMMAND & CONTROL</div>
+        <button class="nav-item active" data-tab="tab-overview">
+          <span class="icon">📊</span> Overview & Metrics
+        </button>
+        <button class="nav-item" data-tab="tab-live-radar">
+          <span class="icon">📡</span> Live Radar & Dispatch
+        </button>
+
+        <div class="nav-section-title">FLEET MANAGEMENT</div>
+        <button class="nav-item" data-tab="tab-captains">
+          <span class="icon">👨‍✈️</span> Captains & Approvals
+          <span class="badge-count" id="count-pending-captains">0</span>
+        </button>
+        <button class="nav-item" data-tab="tab-passengers">
+          <span class="icon">👥</span> Passengers & Wallets
+        </button>
+        <button class="nav-item" data-tab="tab-rides">
+          <span class="icon">🚖</span> Rides & Trip Logs
+        </button>
+
+        <div class="nav-section-title">SETTLEMENT & PAYMENTS</div>
+        <button class="nav-item" data-tab="tab-payments">
+          <span class="icon">💳</span> YouPI & UTR Verification
+          <span class="badge-count warning" id="count-pending-utrs">0</span>
+        </button>
+        <button class="nav-item" data-tab="tab-wallets">
+          <span class="icon">📒</span> Financial Ledger
+        </button>
+        <button class="nav-item" data-tab="tab-refunds">
+          <span class="icon">🔄</span> Refunds & Disputes
+        </button>
+
+        <div class="nav-section-title">OPERATIONS & COMPLIANCE</div>
+        <button class="nav-item" data-tab="tab-support">
+          <span class="icon">💬</span> Complaints & Support
+          <span class="badge-count" id="count-pending-support">0</span>
+        </button>
+        <button class="nav-item" data-tab="tab-reports">
+          <span class="icon">📈</span> Reports & GST Audit
+        </button>
+        <button class="nav-item" data-tab="tab-config">
+          <span class="icon">⚙️</span> Rates & Configuration
+        </button>
+        <button class="nav-item" data-tab="tab-audit">
+          <span class="icon">🛡️</span> Immutable Audit Trail
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="btn-refresh-all" class="btn-refresh">
+          <span>🔄</span> Refresh Telemetry
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT VIEWPORT -->
+    <main class="content-viewport">
+      <!-- TOP HEADER -->
+      <header class="content-header">
+        <div class="header-left">
+          <h1 id="tab-heading">Fleet Operations & System Metrics</h1>
+          <p id="tab-subheading">Real-time status of Toto Drive network and settlement rails</p>
+        </div>
+        <div class="header-right">
+          <span class="last-sync-time">Last synchronized: <span id="sync-clock">Just now</span></span>
+          <button id="btn-export-quick" class="btn-secondary btn-sm">Export Snapshot</button>
+        </div>
+      </header>
+
+      <div class="view-scrollable">
+        <!-- 1. OVERVIEW & METRICS TAB -->
+        <section id="tab-overview" class="tab-pane active">
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-title">TODAY'S REVENUE</div>
+              <div class="kpi-value" id="kpi-today-revenue">₹0.00</div>
+              <div class="kpi-sub positive" id="kpi-platform-share">Platform Fee: ₹0.00</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-title">TOTAL COMPLETED TRIPS</div>
+              <div class="kpi-value" id="kpi-completed-trips">0</div>
+              <div class="kpi-sub" id="kpi-active-trips">Active In-Progress: 0</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-title">ACTIVE ONLINE CAPTAINS</div>
+              <div class="kpi-value" id="kpi-online-captains">0</div>
+              <div class="kpi-sub" id="kpi-total-captains">Total Fleet: 0 Registered</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-title">PENDING UTR REVIEWS</div>
+              <div class="kpi-value highlight" id="kpi-pending-utrs">0</div>
+              <div class="kpi-sub" id="kpi-kyc-pending">Pending KYC Approvals: 0</div>
+            </div>
+          </div>
+
+          <div class="dashboard-split">
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Live Dispatch Status</h3>
+                <span class="tag live">REAL-TIME</span>
+              </div>
+              <div class="panel-body">
+                <div class="metrics-list" id="dispatch-metrics-list">
+                  <div class="metric-row">
+                    <span>Searching for Drivers</span>
+                    <strong id="metric-searching-count">0</strong>
+                  </div>
+                  <div class="metric-row">
+                    <span>Driver Arriving at Pickup</span>
+                    <strong id="metric-arriving-count">0</strong>
+                  </div>
+                  <div class="metric-row">
+                    <span>In-Transit (OTP Verified)</span>
+                    <strong id="metric-intransit-count">0</strong>
+                  </div>
+                  <div class="metric-row">
+                    <span>Platform Service Zone</span>
+                    <strong>Salt Lake / Karunamoyee / Sector V</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h3>YouPI Settlement Rail Status</h3>
+                <span class="tag secure">P2P UPI ESCROW</span>
+              </div>
+              <div class="panel-body">
+                <div class="metrics-list">
+                  <div class="metric-row">
+                    <span>Platform Collection VPA</span>
+                    <strong id="metric-owner-vpa">subratanaskar@icici</strong>
+                  </div>
+                  <div class="metric-row">
+                    <span>Payment Verification Mode</span>
+                    <strong>Bank UTR + Signed Webhook</strong>
+                  </div>
+                  <div class="metric-row">
+                    <span>Verified Payment Volume</span>
+                    <strong id="metric-verified-volume">₹0.00</strong>
+                  </div>
+                  <div class="metric-row">
+                    <span>Total Refunded Amount</span>
+                    <strong id="metric-refunded-volume">₹0.00</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. LIVE RADAR TAB -->
+        <section id="tab-live-radar" class="tab-pane">
+          <div class="radar-container">
+            <div class="radar-hud">
+              <div class="hud-item">
+                <span class="hud-label">ZONE CENTER</span>
+                <span class="hud-val">22.5850° N, 88.4230° E</span>
+              </div>
+              <div class="hud-item">
+                <span class="hud-label">GEOFENCE RADIUS</span>
+                <span class="hud-val">120m Arrival Circle</span>
+              </div>
+              <div class="hud-item">
+                <span class="hud-label">GPS TELEMETRY</span>
+                <span class="hud-val text-success">STREAMING OK</span>
+              </div>
+            </div>
+            <div class="radar-display" id="radar-canvas-box">
+              <div class="radar-grid"></div>
+              <div class="radar-sweep"></div>
+              <div id="radar-markers"></div>
+            </div>
+            <div class="radar-table-box">
+              <h3>Live Tracked Toto Fleet</h3>
+              <div class="table-wrap">
+                <table class="data-table" id="table-live-radar">
+                  <thead>
+                    <tr>
+                      <th>Captain</th>
+                      <th>Vehicle RC</th>
+                      <th>Battery</th>
+                      <th>Status</th>
+                      <th>Coordinates</th>
+                      <th>Last Seen</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. CAPTAINS & KYC TAB -->
+        <section id="tab-captains" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Toto Captains Registry & KYC Verification Queue</h3>
+              <div class="filter-group">
+                <select id="filter-captain-status">
+                  <option value="all">All Approval Statuses</option>
+                  <option value="pending">Pending KYC Review</option>
+                  <option value="approved">Approved & Active</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="table-captains">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Captain Name</th>
+                    <th>Phone</th>
+                    <th>Vehicle Details</th>
+                    <th>UPI Payout VPA</th>
+                    <th>KYC Status</th>
+                    <th>Wallet Balance</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. PASSENGERS TAB -->
+        <section id="tab-passengers" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Registered Passenger Roster</h3>
+              <input type="text" id="search-passengers" placeholder="Search by name or phone..." class="input-search">
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="table-passengers">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Passenger Name</th>
+                    <th>Phone Number</th>
+                    <th>Wallet Balance</th>
+                    <th>Total Rides</th>
+                    <th>Registered At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. RIDES & TRIP LOGS TAB -->
+        <section id="tab-rides" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Authoritative Rides & Dispatch Audit</h3>
+              <div class="filter-group">
+                <select id="filter-ride-status">
+                  <option value="all">All Ride Statuses</option>
+                  <option value="active">Active & In-Progress</option>
+                  <option value="completed">Completed Trips</option>
+                  <option value="cancelled">Cancelled Trips</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="table-rides">
+                <thead>
+                  <tr>
+                    <th>Ride ID</th>
+                    <th>Passenger</th>
+                    <th>Captain</th>
+                    <th>Route</th>
+                    <th>Fare</th>
+                    <th>Payment</th>
+                    <th>Trip Status</th>
+                    <th>OTP</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. SETTLEMENT & PAYMENTS TAB -->
+        <section id="tab-payments" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>YouPI Payment Sessions & Bank UTR Verification Queue</h3>
+              <div class="filter-group">
+                <select id="filter-payment-status">
+                  <option value="all">All Statuses</option>
+                  <option value="MANUAL_REVIEW">Pending Manual UTR Review</option>
+                  <option value="VERIFIED">Verified & Settled</option>
+                  <option value="ACTIVE">Active / Checkout Open</option>
+                  <option value="REJECTED">Rejected UTRs</option>
+                  <option value="REFUNDED">Refunded</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="table-payments">
+                <thead>
+                  <tr>
+                    <th>Session ID</th>
+                    <th>Order ID</th>
+                    <th>Type</th>
+                    <th>User ID</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Submitted UTR</th>
+                    <th>Created At</th>
+                    <th>Review Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. FINANCIAL LEDGER TAB -->
+        <section id="tab-wallets" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Double-Entry Financial Ledger Trail</h3>
+              <div class="btn-group">
+                <button class="btn-sm btn-secondary" id="btn-export-ledger">Export Ledger CSV</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="table-wallets">
+                <thead>
+                  <tr>
+                    <th>Ledger Entry ID</th>
+                    <th>Wallet Type</th>
+                    <th>Owner ID</th>
+                    <th>Transaction Type</th>
+                    <th>Amount</th>
+                    <th>Before</th>
+                    <th>After</th>
+                    <th>Description</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. REFUNDS & DISPUTES TAB -->
+        <section id="tab-refunds" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Passenger & Ride Refund Management</h3>
+            </div>
+            <div class="panel-body">
+              <div class="card-inline">
+                <h4>Initiate Authoritative Refund</h4>
+                <p>Reverse a verified payment session to passenger wallet balance or record bank UTR disbursement.</p>
+                <form id="refund-form" class="form-grid">
+                  <div class="form-group">
+                    <label>Transaction Session ID</label>
+                    <input type="text" id="refund-session-id" placeholder="txn_..." required>
+                  </div>
+                  <div class="form-group">
+                    <label>Refund Type</label>
+                    <select id="refund-type">
+                      <option value="wallet">In-App Passenger Wallet Credit (Instant)</option>
+                      <option value="bank_manual">Manual Bank Transfer (IMPS/UPI)</option>
+                    </select>
+                  </div>
+                  <div class="form-group" id="group-refund-utr" style="display: none;">
+                    <label>Bank Settlement UTR</label>
+                    <input type="text" id="refund-bank-utr" placeholder="12-digit Bank Reference">
+                  </div>
+                  <div class="form-group">
+                    <label>Refund Amount (₹)</label>
+                    <input type="number" id="refund-amount" step="0.50" placeholder="e.g. 150.00" required>
+                  </div>
+                  <div class="form-group span-2">
+                    <label>Audit Reason / Resolution Notes</label>
+                    <input type="text" id="refund-reason" placeholder="e.g. Trip cancelled by driver after payment" required>
+                  </div>
+                  <div class="form-actions span-2">
+                    <button type="submit" class="btn-danger">Process Authoritative Refund</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. COMPLAINTS & SUPPORT TAB -->
+        <section id="tab-support" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Customer & Driver Support Incident Tickets</h3>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="table-support">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Subject</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. REPORTS & RECONCILIATION TAB -->
+        <section id="tab-reports" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Financial Settlement & Reconciliation Audit</h3>
+              <button id="btn-export-financial-report" class="btn-sm btn-primary">Export Financial Summary</button>
+            </div>
+            <div class="panel-body">
+              <div class="report-box" id="report-summary-view">
+                Loading reconciliation data...
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 11. RATES & CONFIGURATION TAB -->
+        <section id="tab-config" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>System Rates & Owner Collection VPA Configuration</h3>
+            </div>
+            <div class="panel-body">
+              <form id="config-form" class="form-grid">
+                <div class="form-group">
+                  <label>Base Fare (₹)</label>
+                  <input type="number" id="cfg-base-fare" step="1" required>
+                </div>
+                <div class="form-group">
+                  <label>Per Kilometer Rate (₹/km)</label>
+                  <input type="number" id="cfg-per-km" step="0.5" required>
+                </div>
+                <div class="form-group">
+                  <label>Platform Commission Fee (%)</label>
+                  <input type="number" id="cfg-commission-pct" step="1" value="10" required>
+                </div>
+                <div class="form-group">
+                  <label>Night Surcharge Multiplier</label>
+                  <input type="number" id="cfg-night-mult" step="0.05" required>
+                </div>
+                <div class="form-group span-2">
+                  <label>Platform Receiving UPI ID (YouPI Collection VPA)</label>
+                  <input type="text" id="cfg-owner-upi" required>
+                </div>
+                <div class="form-actions span-2">
+                  <button type="submit" class="btn-primary">Update System Parameters</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- 12. IMMUTABLE AUDIT TRAIL TAB -->
+        <section id="tab-audit" class="tab-pane">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Cryptographic Platform Audit Trail</h3>
+              <span class="tag secure">IMMUTABLE LOG</span>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="table-audit">
+                <thead>
+                  <tr>
+                    <th>Log ID</th>
+                    <th>Action</th>
+                    <th>Admin / Actor</th>
+                    <th>Target Resource</th>
+                    <th>Target ID</th>
+                    <th>Details</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- UTR REVIEW MODAL -->
+  <div id="modal-utr-review" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Review Bank UTR Claim</h3>
+        <button class="modal-close" id="btn-close-utr-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Compare the submitted customer transaction reference with your actual ICICI/Bank statement before approving.
+        </p>
+        <div class="review-details-box" id="utr-modal-details"></div>
+        <div class="form-group">
+          <label>Audit & Verification Notes</label>
+          <input type="text" id="utr-review-notes" placeholder="e.g. Bank SMS credit verified from HDFC UPI">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger" id="btn-utr-reject">Reject UTR Claim</button>
+        <button class="btn-success" id="btn-utr-approve">Approve & Settle Funds</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAPTAIN KYC REVIEW MODAL -->
+  <div id="modal-kyc-review" class="modal-backdrop" style="display: none;">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3>Captain KYC Documents Verification</h3>
+        <button class="modal-close" id="btn-close-kyc-modal">&times;</button>
+      </div>
+      <div class="modal-body" id="kyc-modal-content">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger" id="btn-kyc-reject">Reject Documents</button>
+        <button class="btn-success" id="btn-kyc-approve">Approve Captain Onboarding</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

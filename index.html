@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Initialize React refresh preamble synchronously
+      window.$RefreshReg$ = window.$RefreshReg$ || function() {};
+      window.$RefreshSig$ = window.$RefreshSig$ || function() { return function(type) { return type; }; };
+      window.__vite_plugin_react_preamble_installed__ = true;
+
+      // Suppress benign [vite] HMR messages in containerized sandbox
+      (function() {
+        if (typeof window === 'undefined') return;
+
+        var isViteMsg = function(args) {
+          for (var i = 0; i < args.length; i++) {
+            var arg = args[i];
+            var str = typeof arg === 'string'
+              ? arg
+              : (arg && (arg.message || arg.stack) ? (String(arg.message) + ' ' + String(arg.stack || '')) : (arg ? String(arg) : ''));
+            if (str && (
+              str.indexOf('[vite]') !== -1 ||
+              str.indexOf('vite-hmr') !== -1 ||
+              str.indexOf('preamble') !== -1 ||
+              (str.indexOf('vite') !== -1 && str.indexOf('websocket') !== -1)
+            )) {
+              return true;
+            }
+          }
+          return false;
+        };
+
+        // 1. Intercept all console methods
+        ['error', 'warn', 'info', 'debug', 'log'].forEach(function(method) {
+          var orig = console[method];
+          if (typeof orig === 'function') {
+            console[method] = function() {
+              if (isViteMsg(arguments)) return;
+              return orig.apply(console, arguments);
+            };
+          }
+        });
+
+        // 2. Prevent unhandled rejections from Vite HMR websocket failures or preamble
+        window.addEventListener('unhandledrejection', function(event) {
+          var str = String((event.reason && (event.reason.message || event.reason.stack || event.reason)) || '');
+          if (str.indexOf('WebSocket') !== -1 || str.indexOf('vite') !== -1 || str.indexOf('preamble') !== -1) {
+            event.preventDefault();
+            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          }
+        }, true);
+
+        // 3. Prevent window error events from Vite HMR or preamble
+        window.addEventListener('error', function(event) {
+          var str = String((event.message || '') + ' ' + ((event.error && (event.error.message || event.error.stack)) || ''));
+          if (str.indexOf('[vite]') !== -1 || str.indexOf('vite-hmr') !== -1 || str.indexOf('preamble') !== -1 || str.indexOf('WebSocket') !== -1) {
+            event.preventDefault();
+            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          }
+        }, true);
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="theme-color" content="#FAF8F5" id="meta-theme-color" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link id="app-manifest" rel="manifest" href="/manifest-customer.webmanifest" />
+    <title>Toto Drive</title>
+    <meta name="description" content="Toto Drive - Eco-friendly e-rickshaw ride-hailing platform featuring user and driver login portals, interactive live maps, ride booking, fare calculator, and partner dispatch management." />
+    <meta property="og:title" content="Toto Drive" />
+    <meta property="og:description" content="Toto Drive - Eco-friendly e-rickshaw ride-hailing platform featuring user and driver login portals, interactive live maps, ride booking, fare calculator, and partner dispatch management." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#FAF8F5] text-[#111111] antialiased selection:bg-[#FDE8DC] selection:text-[#C8622A]">
+    <div id="root"></div>
+    <!-- Universal YOUPI PG SDK -->
+    <script src="/youpi.js" data-youpi-key="yp_live_c65004c566aff70da3ca7c9b0d802268" data-merchant-id="00000000-0000-0000-0000-000000000001"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

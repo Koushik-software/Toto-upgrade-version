@@ -1,0 +1,27 @@
+{
+  "name": "totodrive-captain",
+  "version": "2.0.0",
+  "private": true,
+  "description": "TOTO Captain Android Driver Partner Mobile Application",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "cap:sync": "cap sync android",
+    "cap:open": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.6.0",
+    "@capacitor/cli": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/geolocation": "^8.6.0",
+    "@capacitor/preferences": "^8.6.0",
+    "canvas-confetti": "^1.9.4",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1"
+  }
+}

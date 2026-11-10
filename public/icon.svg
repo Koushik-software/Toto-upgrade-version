@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background subtle green gradient matching uploaded reference -->
+    <radialGradient id="outerBg" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#55997d"/>
+      <stop offset="70%" stop-color="#3b7961"/>
+      <stop offset="100%" stop-color="#2d614d"/>
+    </radialGradient>
+    
+    <!-- Golden yellow squircle gradient -->
+    <linearGradient id="yellowSquircle" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FCE138"/>
+      <stop offset="50%" stop-color="#F7CC11"/>
+      <stop offset="100%" stop-color="#EBB608"/>
+    </linearGradient>
+
+    <!-- Subtle shadow filter -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Outer background (soft green) -->
+  <rect width="512" height="512" fill="url(#outerBg)" rx="48"/>
+
+  <!-- Golden yellow squircle emblem -->
+  <rect x="36" y="36" width="440" height="440" rx="160" fill="url(#yellowSquircle)" stroke="#C79804" stroke-width="4" filter="url(#shadow)"/>
+
+  <!-- Inner Toto Illustration Group -->
+  <g id="toto-illustration" fill="#1C1815" stroke="#1C1815" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Ground line curve -->
+    <path d="M 110 354 Q 256 340 402 354" fill="none" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Front Wheel -->
+    <circle cx="172" cy="326" r="28" fill="#1C1815"/>
+    <circle cx="172" cy="326" r="14" fill="#F7CC11"/>
+    <circle cx="172" cy="326" r="6" fill="#1C1815"/>
+
+    <!-- Rear Wheel -->
+    <circle cx="334" cy="326" r="28" fill="#1C1815"/>
+    <circle cx="334" cy="326" r="14" fill="#F7CC11"/>
+    <circle cx="334" cy="326" r="6" fill="#1C1815"/>
+
+    <!-- Rear Mudguard -->
+    <path d="M 302 324 A 36 36 0 0 1 366 324" fill="none" stroke-width="8"/>
+    <!-- Front Mudguard -->
+    <path d="M 144 324 A 32 32 0 0 1 198 316" fill="none" stroke-width="8"/>
+
+    <!-- Front Fork & Handlebar -->
+    <path d="M 172 326 L 194 250 L 214 250" fill="none" stroke-width="8"/>
+
+    <!-- Driver Silhouette -->
+    <!-- Head -->
+    <circle cx="236" cy="226" r="15" fill="#1C1815"/>
+    <!-- Torso leaning forward to handlebar -->
+    <path d="M 233 241 C 235 258, 230 274, 226 292 L 254 292 L 250 248 Z" fill="#1C1815"/>
+    <!-- Arm holding handlebar -->
+    <path d="M 236 250 L 210 256" fill="none" stroke-width="8"/>
+    <!-- Driver Leg/Foot -->
+    <path d="M 226 292 L 218 314 L 202 314" fill="none" stroke-width="9"/>
+
+    <!-- Driver Seat -->
+    <path d="M 230 292 L 262 292 L 260 300 L 226 300 Z" fill="#1C1815"/>
+
+    <!-- Toto Cabin & Body -->
+    <!-- Front curved hood / windshield -->
+    <path d="M 186 312 L 174 274 C 172 250, 180 220, 206 198 L 270 194" fill="none" stroke-width="10"/>
+    
+    <!-- Windshield glass cut-out / frame -->
+    <path d="M 188 266 C 188 238, 196 214, 216 206 L 254 204 L 252 232 L 206 256 Z" fill="#F7CC11" stroke-width="4"/>
+
+    <!-- Rear Passenger Body Frame / Roof -->
+    <path d="M 270 194 L 358 198 C 366 200, 370 208, 368 220 L 360 312 L 268 312" fill="none" stroke-width="10"/>
+    <path d="M 268 312 L 268 200" fill="none" stroke-width="8"/>
+
+    <!-- Rear Passenger Canopy side bars -->
+    <path d="M 312 210 L 308 308" fill="none" stroke-width="6"/>
+
+    <!-- Rear Body Paneling -->
+    <rect x="306" y="260" width="56" height="48" rx="6" fill="#1C1815"/>
+    <!-- Horizontal rib lines on Toto rear body -->
+    <line x1="312" y1="272" x2="356" y2="272" stroke="#F7CC11" stroke-width="3"/>
+    <line x1="312" y1="284" x2="356" y2="284" stroke="#F7CC11" stroke-width="3"/>
+    <line x1="312" y1="296" x2="356" y2="296" stroke="#F7CC11" stroke-width="3"/>
+
+    <!-- Passenger Seat Cushion -->
+    <rect x="272" y="278" width="30" height="24" rx="4" fill="#1C1815"/>
+
+    <!-- Dynamic Electric Lightning Bolt from Roof / Cabin -->
+    <polygon points="350,132 278,256 316,252 290,314 366,220 326,222" fill="#1C1815" stroke="#1C1815" stroke-width="4" stroke-linejoin="miter"/>
+
+    <!-- Speed / Motion Lines behind the Toto -->
+    <line x1="372" y1="230" x2="396" y2="230" stroke-width="5"/>
+    <line x1="368" y1="244" x2="406" y2="244" stroke-width="5"/>
+    <line x1="372" y1="288" x2="410" y2="288" stroke-width="5"/>
+    <line x1="370" y1="300" x2="394" y2="300" stroke-width="5"/>
+  </g>
+</svg>

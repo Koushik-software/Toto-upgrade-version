@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TOTO Captain</string>
+    <string name="title_activity_main">TOTO Captain</string>
+    <string name="package_name">com.koushiksoftware.totodrive.captain</string>
+    <string name="custom_url_scheme">totocaptain</string>
+</resources>

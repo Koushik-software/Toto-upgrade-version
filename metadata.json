@@ -1,0 +1,10 @@
+{
+  "name": "Toto Drive",
+  "description": "Toto Drive - Eco-friendly e-rickshaw ride-hailing platform featuring user and driver login portals, interactive live maps, ride booking, fare calculator, and partner dispatch management.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
