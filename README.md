@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TOTO DRIVE — PRODUCTION MULTI-APPLICATION ECOSYSTEM
 **Eco-Friendly Electric Rickshaw (Toto) Dispatch & Ride-Hailing Platform**  
 **Operating Zone:** Greater Kolkata, Salt Lake Sector V, New Town, Bidhannagar, West Bengal  
@@ -135,3 +136,16 @@ In Android Studio:
 - `ENVIRONMENT_VARIABLES.md`: Complete environment variables specification.
 - `TEST_REPORT.md`: Automated test execution results (56/56 passed).
 - `DEPLOYMENT_GUIDE.md`: Server deployment guide using NGINX and PM2.
+=======
+<div align="center">
+
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+
+  <h1>Built with AI Studio</h2>
+
+  <p>The fastest path from prompt to production with Gemini.</p>
+
+  <a href="https://aistudio.google.com/apps">Start building</a>
+
+</div>
+>>>>>>> origin/main
