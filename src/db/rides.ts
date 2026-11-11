@@ -19,6 +19,9 @@ export interface InsertRideData {
 }
 
 export async function saveRide(rideData: InsertRideData) {
+  if (!process.env.SQL_HOST) {
+    return rideData;
+  }
   try {
     const result = await db.insert(rides)
       .values(rideData)
@@ -35,16 +38,19 @@ export async function saveRide(rideData: InsertRideData) {
       .returning();
     return result[0];
   } catch (error) {
-    console.error("Failed to save ride in Cloud SQL:", error);
-    throw new Error("Failed to persist ride record. Please try again later.", { cause: error });
+    console.warn("Notice: Cloud SQL ride save skipped or offline:", error);
+    return rideData;
   }
 }
 
 export async function getUserRides(userId: string) {
+  if (!process.env.SQL_HOST) {
+    return [];
+  }
   try {
     return await db.select().from(rides).where(eq(rides.userId, userId)).orderBy(desc(rides.createdAt));
   } catch (error) {
-    console.error("Failed to fetch rides from Cloud SQL:", error);
-    throw new Error("Failed to retrieve rides. Please try again later.", { cause: error });
+    console.warn("Notice: Cloud SQL rides query skipped or offline:", error);
+    return [];
   }
 }

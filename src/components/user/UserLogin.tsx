@@ -482,9 +482,6 @@ export const UserLogin: React.FC<UserLoginProps> = ({ onLoginSuccess, onBack }) 
                   <label className="block font-bold text-neutral-800 text-[13px]">
                     WhatsApp Mobile Number
                   </label>
-                  <span className="text-[11px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                    🇮🇳 India (+91)
-                  </span>
                 </div>
 
                 <div className="relative flex items-center bg-neutral-50 rounded-2xl border border-neutral-200 focus-within:border-emerald-500 focus-within:bg-white transition-colors px-3 py-2.5">
